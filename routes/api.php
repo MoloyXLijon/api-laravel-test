@@ -45,5 +45,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/user/login', [UserController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/add-to-cart', [UserController::class, 'addToCart']);
-    // Other user routes...
+    
 });
