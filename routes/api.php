@@ -30,10 +30,11 @@ Route::get('message', function(){
     ], 422);
 });
 
+Route::get('/login-error', [UserController::class, 'login_error'])->name('login_error');
 
 // Admin routes
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
-Route::group(['prefix' => 'admin','middleware' => 'auth:sanctum',], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth:sanctum', 'guest']], function () {
     // Route::post('/admin/create-product', [AdminAuthController::class, 'createProduct']);
     // Route::get('categories', [CategoryController::class, 'index']);
     // Route::post('categories/store', [CategoryController::class, 'store']);
@@ -41,14 +42,14 @@ Route::group(['prefix' => 'admin','middleware' => 'auth:sanctum',], function () 
     Route::get('/product-list', [ProductController::class, 'index']);
     Route::post('/product-create', [ProductController::class, 'create']);
     Route::post('/product-update/{id}', [ProductController::class, 'update']);
-    Route::delete('/delete/{id}', [ProductController::class, 'destroy']);
+    Route::delete('/product-delete/{id}', [ProductController::class, 'destroy']);
 });
 
 // User routes
 Route::post('/user/login', [UserController::class, 'login']);
 Route::post('/user/register', [UserController::class, 'create']);
 Route::get('/product-list', [UserController::class, 'index']);
-Route::group(['prefix' => 'user','middleware' => 'auth:sanctum',], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum', 'guest']], function () {
     Route::get('/cart/list', [UserController::class, 'cartList']);
     Route::post('/add-to-cart', [UserController::class, 'addToCart']);
     Route::post('/place-order', [OrderController::class, 'placeOrder']);

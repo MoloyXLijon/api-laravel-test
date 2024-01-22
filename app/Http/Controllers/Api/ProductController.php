@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('isAdmin')->only(['create', 'update', 'destroy']);
+    }
+
     public function index()
     {
         $products = Product::with('multi_imgs')->latest()->paginate(20);
@@ -24,6 +30,9 @@ class ProductController extends Controller
     }
     public function create(Request $request)
     {   
+        if (!Auth::user()->isAdmin()) {
+            return response()->json(['error' => 'Permission denied.'], 403);
+        }
         try {
             $validateUser = Validator::make($request->all(), 
             [
@@ -86,6 +95,9 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!Auth::user()->isAdmin()) {
+            return response()->json(['error' => 'Permission denied.'], 403);
+        }
         try {
             $validateUser = Validator::make($request->all(), 
             [
@@ -153,6 +165,9 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
+        if (!Auth::user()->isAdmin()) {
+            return response()->json(['error' => 'Permission denied.'], 403);
+        }
         try {
             $product = Product::findOrFail($id);
 

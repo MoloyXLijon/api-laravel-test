@@ -23,6 +23,11 @@ class UserController extends Controller
             'data' => $products
         ]);
     }
+
+    public function login_error(){
+        return response()->json(['error' => 'Unauthenticated. Please log in.'], 401);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -118,7 +123,6 @@ class UserController extends Controller
                 }
 
                 return response()->json(['message' => 'Product added to cart successfully'], 200);
-
             } catch (\Throwable $th) {
                 return response()->json([
                     'status' => false,
