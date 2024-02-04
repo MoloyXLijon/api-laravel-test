@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Auth;
 
-class IsAdminMiddleware
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,12 +14,15 @@ class IsAdminMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('admin')->check()) {
-            return $next($request);
-        }
+        $user = auth()->user();
+        dd($user);
 
-        return response()->json(['error' => 'Permission denied.'], 403);
+        if ($user->type == 'admin') {
+            return $next($request);
+        } else {
+            abort(404);
+        }
     }
 }

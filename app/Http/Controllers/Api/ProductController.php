@@ -13,11 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('isAdmin')->only(['create', 'update', 'destroy']);
-    }
-
     public function index()
     {
         $products = Product::with('multi_imgs')->latest()->paginate(20);
@@ -30,11 +25,8 @@ class ProductController extends Controller
     }
     public function create(Request $request)
     {   
-        if (!Auth::user()->isAdmin()) {
-            return response()->json(['error' => 'Permission denied.'], 403);
-        }
         try {
-            $validateUser = Validator::make($request->all(), 
+            $validateUser = Validator::make($request->all(),
             [
                 'name' => 'required|string',
                 'price' => 'required',
@@ -95,9 +87,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!Auth::user()->isAdmin()) {
-            return response()->json(['error' => 'Permission denied.'], 403);
-        }
         try {
             $validateUser = Validator::make($request->all(), 
             [
@@ -165,9 +154,6 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        if (!Auth::user()->isAdmin()) {
-            return response()->json(['error' => 'Permission denied.'], 403);
-        }
         try {
             $product = Product::findOrFail($id);
 

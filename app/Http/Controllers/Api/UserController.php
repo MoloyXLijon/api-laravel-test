@@ -28,62 +28,6 @@ class UserController extends Controller
         return response()->json(['error' => 'Unauthenticated. Please log in.'], 401);
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('UserToken')->plainTextToken;
-
-            return response()->json([
-                'status' => true,
-                'message' => 'User login Successfully',
-                'token' => $token
-            ], 200);
-        }
-
-        return response()->json(['error' => 'Invalid credentials'], 401);
-    }
-
-    public function create(Request $request)
-    {
-        try {
-            $validateUser = Validator::make($request->all(), 
-            [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required'
-            ]);
-
-            if($validateUser->fails()){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
-            }
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
-
     public function addToCart(Request $request)
     {
         if (auth()->check()) {
